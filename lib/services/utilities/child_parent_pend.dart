@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:morea/morea_strings.dart';
+import 'package:morea/services/Group/group_data.dart';
 import 'package:morea/services/auth.dart';
 import 'package:morea/services/cloud_functions.dart';
 import 'package:morea/services/crud.dart';
+import 'package:morea/services/group.dart';
 import 'package:morea/services/morea_firestore.dart';
 
 abstract class BaseChildParendPend {
@@ -70,13 +72,12 @@ class ChildParendPend extends BaseChildParendPend {
       childData[userMapUID] = childUID;
       await crud0.setData(pathUser, childUID, childData);
       (childData[userMapGroupIDs] as List<String>).forEach((groupID) {
-        moreaFirebase.groupPriviledgeTN(
-            groupID,
-            childUID,
-            (childData[userMapPfadiName] == ' '
+        MoreaGroup.join(groupID,
+            userID: childUID,
+            displayName: (childData[userMapPfadiName] == ' '
                 ? childData[userMapVorName]
                 : childData[userMapPfadiName]),
-            childData);
+            customInfo: childData);
       });
       moreaFirebase.subscribeToGroup(childData[userMapGroupIDs]);
       String requestStr = await this.childGenerateRequestString(childData);

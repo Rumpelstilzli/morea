@@ -7,8 +7,6 @@ import 'package:morea/services/crud.dart';
 import 'package:morea/services/group.dart';
 import 'package:morea/services/morea_firestore.dart';
 
-String sessionUserID, sessionUserName;
-
 class User {
   String displayName,
       pfadiName,
@@ -21,8 +19,7 @@ class User {
       handynummer,
       ort,
       plz,
-      geschlecht,
-      userID;
+      geschlecht;
   //List<String> subscribedGroups = new List<String>();
   List<String> groupIDs = new List<String>();
   Map<String, RoleEntry> groupPrivilege = new Map();
@@ -30,6 +27,7 @@ class User {
   Map<String, dynamic> _userMap, groupMap, elternMap;
   CrudMedthods crud0;
   Map<String, GroupData> subscribedGroups = new Map<String, GroupData>();
+  static String id, userName;
 
   User(this.crud0);
 
@@ -43,7 +41,7 @@ class User {
 
     if (_userMap.containsKey(userMapVorName)) {
       vorName = _userMap[userMapVorName];
-      sessionUserName = vorName;
+      userName = vorName;
     } else
       throw "$userMapVorName has to be non-null";
 
@@ -78,8 +76,7 @@ class User {
       throw "$userMapPLZ has to be non-null";
 
     if (_userMap.containsKey(userMapUID)) {
-      userID = _userMap[userMapUID];
-      sessionUserID = userID;
+      id = _userMap[userMapUID];
     } else
       throw "$userMapUID has to be non-null";
 
@@ -105,7 +102,7 @@ class User {
     }
     for (String groupID in groupIDs) {
       var someVar = (await crud0.getDocument(
-          '$pathGroups/$groupID/$pathPriviledge', this.userID));
+          '$pathGroups/$groupID/$pathPriviledge', User.id));
       GroupData groupData = new GroupData(
           groupData: Map<String, dynamic>.from(
               (await crud0.getDocument(pathGroups, groupID)).data()),
@@ -147,7 +144,7 @@ class User {
       throw "$userMapPLZ has to be non-null";
 
     if (_userMap.containsKey(userMapUID))
-      userID = _userMap[userMapUID];
+      User.id = _userMap[userMapUID];
     else
       throw "$userMapUID has to be non-null";
 
@@ -186,7 +183,7 @@ class User {
             groupData: Map<String, dynamic>.from(
                 (await crud0.getDocument(pathGroups, groupID)).data()),
             groupUserData: Map<String, dynamic>.from((await crud0.getDocument(
-                    '$pathGroups/$groupID/$pathPriviledge', this.userID))
+                    '$pathGroups/$groupID/$pathPriviledge', User.id))
                 .data()));
 
         subscribedGroups[groupID] = groupData;
@@ -283,8 +280,8 @@ class User {
     else
       print('nachname error');
 
-    if (userID != null)
-      userMap[userMapUID] = userID;
+    if (id != null)
+      userMap[userMapUID] = id;
     else
       log("$userMapUID has to be non-null");
 
@@ -384,25 +381,23 @@ class User {
       Auth auth, String _password, MoreaFirebase moreafire, onSignedIn,
       {bool tutorial}) async {
     try {
-      userID = await auth.createUserWithEmailAndPassword(email, _password);
-      print('Registered user: $userID');
-      if (userID != null) {
+      User.id = await auth.createUserWithEmailAndPassword(email, _password);
+      print('Registered user: $id');
+      if (id != null) {
         //Creates userMap
         await moreafire.createUserInformation(generateAndValitateUserMap());
         //writes Devicetoken to collection of groupID
         if (groupIDs != null) {
           //Writes tn rights to groupMap
           for (String groupID in groupIDs) {
-            await moreafire.groupPriviledgeTN(
-                groupID,
-                userID,
-                (pfadiName == '' ? vorName : pfadiName),
-                generateAndValitateUserMap());
+            await MoreaGroup.join(groupID,
+                displayName: (pfadiName == '' ? vorName : pfadiName),
+                customInfo: generateAndValitateUserMap());
           }
         }
 
         //uploads devtoken to userMap
-        await moreafire.uploadDevTocken(userID);
+        await moreafire.uploadDevTocken(id);
 
         //sends user to rootpage
         if (tutorial) {
@@ -411,7 +406,7 @@ class User {
           onSignedIn();
         }
       }
-      return userID;
+      return id;
     } catch (e) {
       throw e;
     }

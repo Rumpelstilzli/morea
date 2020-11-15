@@ -85,12 +85,11 @@ class PersonenVerzeichnisStatePage extends State<PersonenVerzeichnisState>
                       shrinkWrap: true,
                       itemCount: groupSnap.data.docs.length,
                       itemBuilder: (context, int index) {
-                        String name = groupSnap.data.docs[index]
-                            .data()[groupMapDisplayName];
-
+                        print(groupSnap.data.docs[index].data());
                         return ListTile(
                           title: new Text(
-                            name,
+                            groupSnap.data.docs[index]
+                                .data()[groupMapDisplayName],
                             style: MoreaTextStyle.lable,
                           ),
                           onTap: () =>

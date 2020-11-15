@@ -132,7 +132,7 @@ class MoreaFirebase extends BaseMoreaFirebase {
     else
       for (String groupID in this.getGroupIDs) {
         var someVar = (await crud0.getDocument(
-                '$pathGroups/$groupID/$pathPriviledge', moreaUser.userID))
+                '$pathGroups/$groupID/$pathPriviledge', User.id))
             .data();
         sCGroupMaps.addStream(crud0
             .streamDocument(pathGroups, groupID)
@@ -239,8 +239,8 @@ class MoreaFirebase extends BaseMoreaFirebase {
       Map<String, dynamic> data) {
     for (String groupID in groupIDs)
       //Upload the HomeFeed
-      this.getMapGroupData[groupID].uploadHomeFeedEntry(this.moreaUser.userID,
-          eventID, eventEndTimeStamp, eventStartTimeStamp, data, this.crud0);
+      this.getMapGroupData[groupID].uploadHomeFeedEntry(User.id, eventID,
+          eventEndTimeStamp, eventStartTimeStamp, data, this.crud0);
   }
 
 /*
@@ -383,19 +383,6 @@ class MoreaFirebase extends BaseMoreaFirebase {
           "deviceID": deviceID,
         }));
     return null;
-  }
-
-  Future<void> groupPriviledgeTN(String groupID, String userID,
-      String displayName, Map<String, dynamic> customInfo) async {
-    return callFunction(getcallable("priviledgeTN"),
-        param: Map<String, dynamic>.from({
-          "groupID": groupID,
-          userMapUID: userID,
-          groupMapDisplayName: displayName,
-          groupMapPriviledgeEntryType: "Teilnehmer",
-          groupMapPriviledgeEntryLocation: "local",
-          groupMapPriviledgeEntryCustomInfo: customInfo
-        }));
   }
 
   Future<String> getMailChimpApiKey() async {

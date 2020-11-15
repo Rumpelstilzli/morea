@@ -33,7 +33,7 @@ abstract class BaseAuth {
   Future<void> signOut();
 
   AuthProblems checkForAuthErrors(
-      BuildContext context, PlatformException error);
+      BuildContext context, FirebaseAuthException error);
 
   void displayAuthError(AuthProblems errorType, BuildContext context);
 
@@ -137,7 +137,7 @@ class Auth implements BaseAuth {
   }
 
   AuthProblems checkForAuthErrors(
-      BuildContext context, PlatformException error) {
+      BuildContext context, FirebaseAuthException error) {
     PlatformType platform = dwiHardware.getDevicePlatform();
     AuthProblems errorType;
     if (platform == PlatformType.isAndroid) {

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:morea/morea_strings.dart';
+import 'package:morea/services/cloud_functions.dart';
 import 'package:morea/services/crud.dart';
 import 'package:morea/services/user.dart';
 import 'package:morea/services/utilities/blockedUserChecker.dart';
@@ -28,8 +29,7 @@ abstract class BaseMoreGroup {
   void streamGroupMap(Stream<String> groupID);
   void readGroupMap(
       Map<String, dynamic> groupMap, String groupID, String userID);
-  Future<void> createGroup(Map<String, dynamic> group);
-  Future<void> joinGroup(String groupID);
+
   Future<void> inviteUsers(List<String> luserIDs);
   //TODO functions
   //TODO fix groupMap doc structure
@@ -53,7 +53,7 @@ class MoreaGroup extends BaseMoreGroup {
       _sDSGroupMap = crud0.streamDocument(pathGroups, groupID);
 
       await for (DocumentSnapshot dSGroupMap in _sDSGroupMap)
-        readGroupMap(dSGroupMap.data(), groupID, sessionUserID);
+        readGroupMap(dSGroupMap.data(), groupID, User.id);
     }
   }
 
@@ -84,9 +84,27 @@ class MoreaGroup extends BaseMoreGroup {
     }
   }
 
-  Future<void> createGroup(Map<String, dynamic> groupMap) {}
-  Future<void> inviteUsers(List<String> luserIDs) {}
-  Future<void> joinGroup(String groupID) {}
+  Future<void> inviteUsers(List<String> userIDs) {}
+
+  // Calls a Firebase Function witch removes the priviledge Entry of a user.
+  // TODO: implement
+  Future<void> leafe({String userID}) {}
+
+  // Calls a Firebase Function, witch adds user to group
+  static Future<void> join(String groupID,
+      {String userID, String displayName, Map<String, dynamic> customInfo}) {
+    return callFunction(getcallable("joinGroup"),
+        param: Map<String, dynamic>.from({
+          "groupID": groupID,
+          userMapUID: (userID != null) ? userID : User.id,
+          groupMapDisplayName:
+              (displayName != null) ? displayName : User.userName,
+          groupMapPriviledgeEntryCustomInfo: customInfo
+        }));
+  }
+
+  // Creates a group TODO: implement
+  static Future<void> create(Map<String, dynamic> groupMap) {}
 }
 
 class PriviledgeEntry extends RoleEntry {

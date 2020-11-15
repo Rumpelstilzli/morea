@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   updatedevtoken() async {
-    moreafire.uploadDevTocken(moreaUser.userID);
+    moreafire.uploadDevTocken(User.id);
   }
 
   void validateAndSubmit() async {
@@ -81,12 +81,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               _load = true;
             });
             //login firebase user
-            moreaUser.userID = await widget.auth
+            User.id = await widget.auth
                 .signInWithEmailAndPassword(moreaUser.email, _password);
-            print('Sign in: ${moreaUser.userID}');
-            if (moreaUser.userID != null) {
+            print('Sign in: ${User.id}');
+            if (User.id != null) {
               //upload deviceToken
-              moreafire.uploadDevTocken(moreaUser.userID);
+              moreafire.uploadDevTocken(User.id);
               widget.onSignedIn(tutorialautostart: false);
             } else {
               setState(() {
@@ -350,9 +350,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     ),
                   ),
                   validator: (value) {
-                    if(value.isEmpty){
+                    if (value.isEmpty) {
                       return 'Bitte nicht leer lassen';
-                    } else if (!MoreaInputValidator.email(value)){
+                    } else if (!MoreaInputValidator.email(value)) {
                       return 'Bitte gültige E-Mail verwenden';
                     } else {
                       return null;

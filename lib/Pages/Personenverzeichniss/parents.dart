@@ -7,6 +7,7 @@ import 'package:morea/Widgets/standart/info.dart';
 import 'package:morea/Widgets/standart/restartWidget.dart';
 import 'package:morea/morea_strings.dart';
 import 'package:morea/morealayout.dart';
+import 'package:morea/services/group.dart';
 
 import 'package:morea/services/morea_firestore.dart';
 import 'package:morea/services/crud.dart';
@@ -623,8 +624,10 @@ class MergeChildParent extends BaseMergeChildParent {
           moreaUser.displayName = moreaUser.pfadiName;
         }
         moreaUser.groupIDs.forEach((String groupID) async {
-          await moreafire.groupPriviledgeTN(groupID, childUID,
-              moreaUser.displayName, moreaUser.generateAndValitateUserMap());
+          await MoreaGroup.join(groupID,
+              userID: childUID,
+              displayName: moreaUser.displayName,
+              customInfo: moreaUser.generateAndValitateUserMap());
         });
 
         return true;
