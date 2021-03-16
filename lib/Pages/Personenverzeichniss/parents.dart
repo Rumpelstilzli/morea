@@ -1,13 +1,15 @@
 import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:morea/Widgets/Login/register.dart';
+import 'package:morea/Widgets/standart/buttons.dart';
 import 'package:morea/Widgets/standart/info.dart';
 import 'package:morea/Widgets/standart/restartWidget.dart';
 import 'package:morea/morea_strings.dart';
 import 'package:morea/morealayout.dart';
 import 'package:morea/services/group.dart';
+import 'package:morea/services/mailchimp_api_manager.dart';
 
 import 'package:morea/services/morea_firestore.dart';
 import 'package:morea/services/crud.dart';
@@ -39,6 +41,7 @@ class MergeChildParent extends BaseMergeChildParent {
   Widget widget = new Container();
   String userId, error;
   List someList;
+  MailChimpAPIManager mailChimpAPIManager = MailChimpAPIManager();
 
   BuildContext showDialogcontext;
 
@@ -199,6 +202,24 @@ class MergeChildParent extends BaseMergeChildParent {
             );
           });
       await childParendPend.parentSendsRequestString(qrCode.qrResult, userMap);
+      DocumentSnapshot userSnap = await moreafire.firestore
+          .collection(pathUser)
+          .doc(userMap[userMapUID])
+          .get();
+      List<String> groupIDs = List<String>();
+      print(userSnap.data().toString());
+      userSnap.data()[userMapKinder].forEach((key, value) async {
+        DocumentSnapshot childSnap =
+            await moreafire.firestore.collection(pathUser).doc(key).get();
+        groupIDs.add(childSnap[userMapGroupIDs][0]);
+      });
+      mailChimpAPIManager.updateUserInfo(
+          userMap[userMapEmail],
+          userMap[userMapVorName],
+          userMap[userMapNachName],
+          userMap[userMapGeschlecht],
+          groupIDs,
+          moreafire);
       Navigator.of(context).pop();
       allowScanner = false;
       parentReaderror = false;
@@ -237,24 +258,11 @@ class MergeChildParent extends BaseMergeChildParent {
               SizedBox(
                 height: 30,
               ),
-              new RaisedButton(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(Icons.camera_alt),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    new Text('Scannen', style: new TextStyle(fontSize: 20))
-                  ],
-                ),
-                onPressed: () => parentReadsQrCode(
-                    userMap, parentaktuallisieren, context, signOut),
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(30.0)),
-                color: Color(0xff7a62ff),
-                textColor: Colors.white,
-              ),
+              moreaRaisedIconButton(
+                  'Scannen',
+                  () => parentReadsQrCode(
+                      userMap, parentaktuallisieren, context, signOut),
+                  Icon(Icons.camera_alt)),
               SizedBox(
                 height: 40,
               ),

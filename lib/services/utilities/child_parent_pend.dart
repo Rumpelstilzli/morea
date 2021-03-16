@@ -12,7 +12,6 @@ abstract class BaseChildParendPend {
 }
 
 class ChildParendPend extends BaseChildParendPend {
-  MCloudFunctions cloudFunctions = new MCloudFunctions();
   CrudMedthods crud0;
   MoreaFirebase moreaFirebase;
 
@@ -20,9 +19,9 @@ class ChildParendPend extends BaseChildParendPend {
 
   Future<String> childGenerateRequestString(
       Map<String, dynamic> userMap) async {
-    var someData = (await cloudFunctions.callFunction(
-            cloudFunctions.getcallable("childPendRequest"),
-            param: Map.from({
+    var someData = (await callFunction(
+            getcallable("childPendRequest"),
+            param: Map<String, dynamic>.from({
               userMapPos: userMap[userMapPos],
               userMapUID: userMap[userMapUID],
               userMapGroupIDs: userMap[userMapGroupIDs],
@@ -42,8 +41,8 @@ class ChildParendPend extends BaseChildParendPend {
 
   Future<void> parentSendsRequestString(
       String requestStr, Map<String, dynamic> userMap) async {
-    return (await cloudFunctions.callFunction(
-        cloudFunctions.getcallable("parendPendAccept"),
+    return (await callFunction(
+        getcallable("parendPendAccept"),
         param: Map.from({
           userMapPos: userMap[userMapPos],
           userMapUID: userMap[userMapUID],
@@ -53,8 +52,8 @@ class ChildParendPend extends BaseChildParendPend {
   }
 
   Future<String> parentCreatesUser(String _email, String _password) async {
-    return (await cloudFunctions.callFunction(
-            cloudFunctions.getcallable("createAccount"),
+    return (await callFunction(
+            getcallable("createAccount"),
             param: Map.from({"email": _email, "password": _password})))
         .data;
   }

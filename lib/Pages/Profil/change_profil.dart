@@ -481,22 +481,15 @@ class _ChangeProfileState extends State<ChangeProfile>
                 ],
               ),
               actions: <Widget>[
-                RaisedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: Icon(
+                moreaRaisedIconButton("Abbrechen", () {
+                  password.clear();
+                  Navigator.of(context).pop();
+                },
+                    Icon(
                       Icons.cancel,
                       color: Colors.white,
                       size: 16,
-                    ),
-                    label: Text(
-                      "Abbrechen",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    color: MoreaColors.violett,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5)))),
+                    )),
                 RaisedButton.icon(
                     onPressed: () async {
                       var result = await _validateAndSave(email);
@@ -509,13 +502,15 @@ class _ChangeProfileState extends State<ChangeProfile>
                         }
                         await widget.moreaFire
                             .updateUserInformation(userInfo['UID'], userInfo);
-                        // await mailChimpAPIManager.updateUserInfo(
-                        //     userInfo['Email'],
-                        //     userInfo['Vorname'],
-                        //     userInfo['Nachname'],
-                        //     userInfo['Geschlecht'],
-                        //     userInfo['groupID'],
-                        //     widget.moreaFire);
+                        List<String> groupIDs =
+                            List<String>.from(userInfo['groupIDs']);
+                        await mailChimpAPIManager.updateUserInfo(
+                            userInfo['Email'],
+                            userInfo['Vorname'],
+                            userInfo['Nachname'],
+                            userInfo['Geschlecht'],
+                            groupIDs,
+                            widget.moreaFire);
                         if (oldEmail != userInfo['Email'] ||
                             newPassword != null) {
                           _showSignOutInformation().then((onValue) {
@@ -557,13 +552,14 @@ class _ChangeProfileState extends State<ChangeProfile>
       _showReauthenticate(oldEmail);
     } else {
       await widget.moreaFire.updateUserInformation(userInfo['UID'], userInfo);
-      // await mailChimpAPIManager.updateUserInfo(
-      //     userInfo['Email'],
-      //     userInfo['Vorname'],
-      //     userInfo['Nachname'],
-      //     userInfo['Geschlecht'],
-      //     userInfo['groupID'],
-      //     widget.moreaFire);
+      List<String> groupIDs = List<String>.from(userInfo['groupIDs']);
+      await mailChimpAPIManager.updateUserInfo(
+          userInfo['Email'],
+          userInfo['Vorname'],
+          userInfo['Nachname'],
+          userInfo['Geschlecht'],
+          groupIDs,
+          widget.moreaFire);
       setState(() {
         loading = false;
       });

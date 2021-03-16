@@ -50,7 +50,7 @@ abstract class BaseMoreaFirebase {
 
   Stream<QuerySnapshot> getChildren();
 
-  Future<void> setMessageRead(String userUID, String messageID, String groupnr);
+  Future<void> setMessageRead(String userUID, String messageID);
 
   Stream<QuerySnapshot> streamCollectionWerChunnt(String eventID);
 
@@ -72,7 +72,7 @@ class MoreaFirebase extends BaseMoreaFirebase {
   Map<String, dynamic> _userMap;
   Platform platform = Platform();
   FirebaseFirestore firestore;
-  FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   User moreaUser;
 
   StreamController<Map<String, GroupData>> sCGroupMaps = BehaviorSubject();
@@ -335,8 +335,6 @@ class MoreaFirebase extends BaseMoreaFirebase {
   }
 
   Future<void> subscribeToGroup(String groupID) async {
-    await firebaseMessaging.requestNotificationPermissions();
-    firebaseMessaging.configure();
     Map<String, dynamic> tokendata = {
       'devtoken': await firebaseMessaging.getToken()
     };
@@ -350,15 +348,17 @@ class MoreaFirebase extends BaseMoreaFirebase {
   }
 
   Future<void> setMessageRead(
-      String userUID, String messageID, String groupnr) async {
+      String userUID, String messageID) async {
     var oldMessage = await crud0.getDocument('messages', messageID);
     List newRead = [];
     for (String index in oldMessage.data()['read']) {
       newRead.add(index);
     }
     newRead.add(userUID);
-    oldMessage.data()['read'] = newRead;
-    await crud0.setData('messages', messageID, oldMessage.data());
+    print(newRead);
+    Map<String, dynamic> oldMessageData = oldMessage.data();
+    oldMessageData['read'] = newRead;
+    await crud0.setData('messages', messageID, oldMessageData);
     return null;
   }
 

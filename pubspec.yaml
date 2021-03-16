@@ -17,46 +17,47 @@ dependencies:
         sdk: flutter
     flutter:
         sdk: flutter
-    firebase_auth: ^0.18.1+2
+    firebase_auth: ^1.0.1
     firebase_messaging: any
-    firebase_analytics: ^6.0.2
-    firebase_core : ^0.5.0
-    cloud_functions: 0.6.0+1
+    firebase_analytics: any
+    firebase_core : ^1.0.0
+    chewie: ^1.0.0
+    cloud_functions: ^1.0.0
     flutter_html: any
     http: any
     intl: any
-    cloud_firestore: ^0.14.1+3
+    cloud_firestore: ^1.0.1
     url_launcher: any
     share: any
     expandable: any
     qr_flutter: any
     qrcode_reader: any
     random_string: any
-    barcode_scan: ^1.0.0
+    barcode_scan: ^3.0.1
     flutter_masked_text: ^0.8.0
-    rxdart: ^0.22.4
+    rxdart: ^0.26.0
     flutter_datetime_picker: ^1.4.0
     flip_card: ^0.4.4
     showcaseview: ^0.1.5
-    device_info: ^0.4.1
+    device_info: ^2.0.0
 
 
     shared_preferences: any
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
-    cupertino_icons: ^0.1.2
+    cupertino_icons: ^1.0.2
 
 
 dev_dependencies:
-    flutter_launcher_icons: "^0.7.0"
+    flutter_launcher_icons: ^0.9.0
     flutter_test:
         sdk: flutter
 
 flutter_icons:
     android: false
     ios: true
-    image_path: "assets/images/logo.jpeg"
+    image_path: "assets/images/logo_app_ios.png"
     adaptive_icon_background: "#fff000"
 
 
@@ -96,6 +97,7 @@ flutter:
         - assets/images/logo.jpeg
         - assets/images/background.png
         - assets/icon/logo_loading.png
+        - assets/images/logo_app_ios.png
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.io/assets-and-images/#resolution-aware.

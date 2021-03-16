@@ -4,6 +4,7 @@ import 'package:morea/services/crud.dart';
 import 'package:morea/services/morea_firestore.dart';
 
 import 'Pages/About/about.dart';
+import 'Pages/Group/add_group.dart';
 import 'Pages/Personenverzeichniss/personen_verzeichniss_page.dart';
 import 'Pages/Personenverzeichniss/profile_page.dart';
 import 'Widgets/Action/scan.dart';
@@ -333,16 +334,6 @@ Drawer moreaDrawer(
             ),
           ),
           new ListTile(
-              title: new Text('Group Page'),
-              trailing: new Icon(Icons.group),
-              onTap: () => Navigator.of(context)
-                  .push(new MaterialPageRoute(
-                      builder: (BuildContext context) => new GroupPage(
-                            moreaFire: moreafire,
-                          )))
-                  .then((onvalue) =>
-                      moreafire.getData(moreafire.getUserMap[userMapUID]))),
-          new ListTile(
               title: new Text('Personen'),
               trailing: new Icon(Icons.people),
               onTap: () => Navigator.of(context)
@@ -360,6 +351,11 @@ Drawer moreaDrawer(
             onTap: () => makeLeiterWidget(context,
                 moreafire.getUserMap[userMapUID], moreafire.getGroupIDs[0]),
           ),
+          ListTile(
+              title: Text("Gruppe erstellen"),
+              trailing: Icon(Icons.group),
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => AddGroup()))),
           new Divider(),
           new ListTile(
               title: new Text("Über dieses App"),

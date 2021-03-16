@@ -34,7 +34,6 @@ enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   DWIFormat dwiFormat = new DWIFormat();
   MoreaFirebase moreafire;
-  FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   Datenschutz datenschutz = new Datenschutz();
   User moreaUser;
   Register register;
@@ -112,13 +111,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 await moreaUser.createMoreaUser(widget.auth,
                     register.getPassword, moreafire, widget.onSignedIn,
                     tutorial: true);
-                // await mailChimpAPIManager.updateUserInfo(
-                //     moreaUser.email,
-                //     moreaUser.vorName,
-                //     moreaUser.nachName,
-                //     moreaUser.geschlecht,
-                //     moreaUser.groupIDs,
-                //     moreafire);
+                await mailChimpAPIManager.updateUserInfo(
+                    moreaUser.email,
+                    moreaUser.vorName,
+                    moreaUser.nachName,
+                    moreaUser.geschlecht,
+                    moreaUser.groupIDs,
+                    moreafire);
               } else {
                 setState(() {
                   _load = false;
@@ -219,7 +218,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 Navigator.pop(context);
                 showDialog(
                     context: context,
-                    child: new AlertDialog(
+                    builder: (context) => AlertDialog(
                       title: new Text(
                           'Es wurde dir eine E-Mail an ${moreaUser.email} gesendet, die einen Link enthält, mit dem du dein Passwort zurücksetzen kannst.'),
                     ));
