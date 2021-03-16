@@ -33,13 +33,13 @@ dependencies:
     qr_flutter: any
     qrcode_reader: any
     random_string: any
-    barcode_scan: ^3.0.1
+    barcode_scan: ^1.0.0
     flutter_masked_text: ^0.8.0
-    rxdart: ^0.26.0
+    rxdart: ^0.22.4
     flutter_datetime_picker: ^1.4.0
     flip_card: ^0.4.4
     showcaseview: ^0.1.5
-    device_info: ^2.0.0
+    device_info: ^0.4.1
 
 
     shared_preferences: any
@@ -50,15 +50,15 @@ dependencies:
 
 
 dev_dependencies:
-    flutter_launcher_icons: ^0.9.0
+    flutter_launcher_icons: "^0.8.0"
     flutter_test:
         sdk: flutter
 
 flutter_icons:
-    android: false
+    android: true
     ios: true
-    image_path: "assets/images/logo_app_ios.png"
-    adaptive_icon_background: "#fff000"
+    image_path: "assets/icon/icon.png"
+    adaptive_icon_background: "#e5cab9"
 
 
 

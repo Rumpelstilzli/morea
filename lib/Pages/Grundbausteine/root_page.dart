@@ -50,7 +50,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   AuthStatus authStatus = AuthStatus.loading;
   MoreaFirebase moreaFire;
   Map<String, Function> navigationMap;
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+
 
   @override
   void initState() {
@@ -74,6 +75,28 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  void showAlertDialog(Map<String, dynamic> response){
+    if (response['typeMorea'] == 'Message') {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Neue Nachricht'),
+            actions: <Widget>[
+              moreaRaisedButton('Ansehen', () {
+                Navigator.of(context).pop();
+                navigationMap[toMessagePage]();
+              }),
+              moreaRaisedButton('Später', () {
+                Navigator.of(context).pop();
+              })
+            ],
+          );
+        },
+      );
+    }
+  }
+
   Future<void> initMoreaFire() async {
     this.moreaFire = new MoreaFirebase(widget.firestore);
     if (await this.moreaFire.getData(await auth.currentUser()) == false) {
@@ -82,28 +105,21 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       });
     }
     await this.moreaFire.initTeleblitz();
-    FirebaseMessaging.onMessage.listen((message) {
-      print("message recieved");
-      if (message.data['typeMorea'] == 'Message') {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Neue Nachricht'),
-              actions: <Widget>[
-                moreaRaisedButton('Ansehen', () {
-                  Navigator.of(context).pop();
-                  navigationMap[toMessagePage]();
-                }),
-                moreaRaisedButton('Später', () {
-                  Navigator.of(context).pop();
-                })
-              ],
-            );
-          },
-        );
-      }
-    });
+
+    firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> response) async {
+        print("onMessage: $response");
+        this.showAlertDialog(response);
+      },
+      onLaunch: (Map<String, dynamic> response) async {
+        print("onLaunch: $response");
+        this.showAlertDialog(response);
+      },
+      onResume: (Map<String, dynamic> response) async {
+        print("onResume: $response");
+        this.showAlertDialog(response);
+      },
+    );
     authStatus = AuthStatus.homePage;
     setState(() {});
     return true;
@@ -280,7 +296,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     await callFunction(getcallable("deactivateDeviceNotification"),
         param: {'uid': (auth.getUserID), 'deviceID': deviceID});
     await auth.signOut();
-    await firebaseMessaging.deleteToken();
+    firebaseMessaging.deleteInstanceID();
     moreaFire = null;
     setState(() {
       authStatus = AuthStatus.notSignedIn;

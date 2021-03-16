@@ -427,20 +427,20 @@ class _ChangeTeleblitzState extends State<ChangeTeleblitz>
 
   Future<Map> downloadTeleblitz() async {
     var infos = await teleblitzManager.downloadTeleblitz(this.stufe);
-    this.name = infos['name'];
-    this.datum = infos['datum'];
-    print(this.datum);
-    antreten = infos['antreten'];
-    mapAntreten = infos['google-map'];
-    abtreten = infos['abtreten'];
-    mapAbtreten = infos['map-abtreten'];
-    mitnehmen = infos['mitnehmen-test'];
-    bemerkung = infos['bemerkung'];
-    sender = infos['name-des-senders'];
-    grund = infos['grund'];
-    endeFerien = infos['ende-ferien'];
-    id = infos['_id'];
-    slug = infos['slug'];
+    this.name = infos['name'] == null ? '' : infos['name'];
+    this.datum = infos['datum'] == null ? '' : infos['datum'];
+
+    antreten = infos['antreten'] == null ? '' : infos['antreten'];
+    mapAntreten = infos['google-map'] == null ? '' : infos['google-map'];
+    abtreten = infos['abtreten'] == null ? '' : infos['abtreten'];
+    mapAbtreten = infos['map-abtreten'] == null ? '' : infos['map-abtreten'];
+    mitnehmen = infos['mitnehmen-test'] == null ? '' : infos['mitnehmen-test'];
+    bemerkung = infos['bemerkung'] == null ? '' : infos['bemerkung'];
+    sender = infos['name-des-senders'] == null ? '' : infos['name-des-senders'];
+    grund = infos['grund'] == null ? '' : infos['grund'];
+    endeFerien = infos['ende-ferien'] == null ? '' : infos['ende-ferien'];
+    id = infos['_id'] == null ? '' : infos['_id'];
+    slug = infos['slug'] == null ? '' : infos['slug'];
     switch (widget.formType) {
       case 'keineAktivitaet':
         keineAktivitaet = true;
