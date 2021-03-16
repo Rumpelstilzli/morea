@@ -25,6 +25,11 @@ Description:
     joinGroup
     adminGroup 
 */
+
+Future<QuerySnapshot> getMembers(CrudMedthods crud0, String groupID) async {
+  return crud0.getCollection('$pathGroups/$groupID/$pathPriviledge');
+}
+
 abstract class BaseMoreGroup {
   void streamGroupMap(Stream<String> groupID);
   void readGroupMap(
@@ -45,7 +50,7 @@ class MoreaGroup extends BaseMoreGroup {
   PriviledgeEntry priviledge;
   Map<String, RoleEntry> roles;
 
-  MoreaGroup({this.smGroupID, @required this.crud0}) {
+  MoreaGroup({this.smGroupID, this.crud0}) {
     streamGroupMap(smGroupID);
   }
   void streamGroupMap(Stream<String> smGroupID) async {
@@ -87,13 +92,27 @@ class MoreaGroup extends BaseMoreGroup {
   Future<void> inviteUsers(List<String> userIDs) {}
 
   // Calls a Firebase Function witch removes the priviledge Entry of a user.
-  // TODO: implement
-  Future<void> leafe({String userID}) {}
+  static Future<void> leafe(String userID, String groupID) {
+    return callFunction(getcallable("leafeGroup"),
+        param: Map<String, dynamic>.from({"UID": userID, "groupID": groupID}));
+  }
 
   // Calls a Firebase Function, witch adds user to group
   static Future<void> join(String groupID,
       {String userID, String displayName, Map<String, dynamic> customInfo}) {
     return callFunction(getcallable("joinGroup"),
+        param: Map<String, dynamic>.from({
+          "groupID": groupID,
+          userMapUID: (userID != null) ? userID : User.id,
+          groupMapDisplayName:
+              (displayName != null) ? displayName : User.userName,
+          groupMapPriviledgeEntryCustomInfo: customInfo
+        }));
+  }
+
+  static Future<void> editPriviledgeEntry(String groupID,
+      {String userID, String displayName, Map<String, dynamic> customInfo}) {
+    return callFunction(getcallable("updatePriviledgeEntry"),
         param: Map<String, dynamic>.from({
           "groupID": groupID,
           userMapUID: (userID != null) ? userID : User.id,
@@ -136,8 +155,8 @@ class PriviledgeEntry extends RoleEntry {
                 rawPriviledge[groupMapPriviledgeEntryCustomInfo][key];
           });
         this.role = local[this.roleType];
-      }
-      print("Role ${this.roleLocation} is not defined in $local");
+      } else
+        print("In Role location: ${this.roleLocation} is not defined $local");
     } else if (this.roleLocation == 'global') {
       if (global.containsKey(this.roleType)) {
         if (global[this.roleType].customInfoTypes != null)
@@ -148,7 +167,7 @@ class PriviledgeEntry extends RoleEntry {
         this.role = global[this.roleType];
         print(this.role);
       } else
-        print("Role ${this.roleType} is not defined in $global");
+        print("In Role location: ${this.roleType} is not defined in $global");
     }
   }
 }
