@@ -8,9 +8,7 @@ import 'package:morea/Widgets/standart/info.dart';
 import 'package:morea/Widgets/standart/restartWidget.dart';
 import 'package:morea/morea_strings.dart';
 import 'package:morea/morealayout.dart';
-import 'package:morea/services/group.dart';
 import 'package:morea/services/mailchimp_api_manager.dart';
-
 import 'package:morea/services/morea_firestore.dart';
 import 'package:morea/services/crud.dart';
 import 'package:morea/services/user.dart';
@@ -162,17 +160,22 @@ class MergeChildParent extends BaseMergeChildParent {
               ),
               Expanded(
                 flex: 2,
-                child: new RaisedButton(
+                child: new ElevatedButton(
                   child:
                       new Text('Abbrechen', style: new TextStyle(fontSize: 20)),
                   onPressed: () async => {
                     childaktuallisieren(),
                     deleteRequest(await qrCodeString)
                   },
-                  shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(30.0)),
-                  color: Color(0xff7a62ff),
-                  textColor: Colors.white,
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30))),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Color(0xff7a62ff)),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
               )
             ],
@@ -206,7 +209,7 @@ class MergeChildParent extends BaseMergeChildParent {
           .collection(pathUser)
           .doc(userMap[userMapUID])
           .get();
-      List<String> groupIDs = List<String>();
+      List<String> groupIDs = <String>[];
       print(userSnap.data().toString());
       userSnap.data()[userMapKinder].forEach((key, value) async {
         DocumentSnapshot childSnap =
@@ -266,15 +269,20 @@ class MergeChildParent extends BaseMergeChildParent {
               SizedBox(
                 height: 40,
               ),
-              new RaisedButton(
+              ElevatedButton(
                 child:
                     new Text('Abbrechen', style: new TextStyle(fontSize: 20)),
                 onPressed: () =>
                     {parentReaderror = false, parentaktuallisieren()},
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(30.0)),
-                color: Color(0xff7a62ff),
-                textColor: Colors.white,
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30))),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xff7a62ff)),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white),
+                ),
               ),
             ],
           ),
@@ -295,7 +303,7 @@ class MergeChildParent extends BaseMergeChildParent {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             register.parentRegisterNewChild(setProfileState),
-            new RaisedButton(
+            ElevatedButton(
               child:
                   new Text('Registrieren', style: new TextStyle(fontSize: 20)),
               onPressed: () => {
@@ -382,12 +390,17 @@ class MergeChildParent extends BaseMergeChildParent {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: <Widget>[
-                                            RaisedButton(
-                                                child: Text("Ok"),
-                                                onPressed: () =>
-                                                    RestartWidget.restartApp(
-                                                        context),
-                                                color: MoreaColors.violett)
+                                            ElevatedButton(
+                                              child: Text("Ok"),
+                                              onPressed: () =>
+                                                  RestartWidget.restartApp(
+                                                      context),
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          MoreaColors.violett)),
+                                            )
                                           ],
                                         ))
                                   ]),
@@ -400,7 +413,7 @@ class MergeChildParent extends BaseMergeChildParent {
                                 content: Text(
                                     'Etwas hat nicht funktioniert. Bitte versuche es erneut.'),
                                 actions: <Widget>[
-                                  RaisedButton(
+                                  ElevatedButton(
                                     child: Text('Ok'),
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
@@ -410,20 +423,28 @@ class MergeChildParent extends BaseMergeChildParent {
                           });
                     }),
               },
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              color: Color(0xff7a62ff),
-              textColor: Colors.white,
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30))),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Color(0xff7a62ff)),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
             ),
-            RaisedButton(
+            ElevatedButton(
               child: new Text('Abbrechen', style: new TextStyle(fontSize: 20)),
               onPressed: () async => {
                 newKidakt(),
               },
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              color: Color(0xff7a62ff),
-              textColor: Colors.white,
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30))),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Color(0xff7a62ff)),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
             )
           ],
         ),
@@ -439,7 +460,7 @@ class MergeChildParent extends BaseMergeChildParent {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             register.parentUpgradeChild(),
-            new RaisedButton(
+            ElevatedButton(
               child: new Text('Upgraden', style: new TextStyle(fontSize: 20)),
               onPressed: () => {
                 upgradeKidExecution(context, upgradeKid, childToUpgradeMap)
@@ -535,16 +556,19 @@ class MergeChildParent extends BaseMergeChildParent {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: <Widget>[
-                                            RaisedButton(
-                                                child: Text("Ok"),
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .popUntil(
-                                                          ModalRoute.withName(
-                                                              '/'));
-                                                  signOut();
-                                                },
-                                                color: MoreaColors.violett)
+                                            ElevatedButton(
+                                              child: Text("Ok"),
+                                              onPressed: () {
+                                                Navigator.of(context).popUntil(
+                                                    ModalRoute.withName('/'));
+                                                signOut();
+                                              },
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          MoreaColors.violett)),
+                                            )
                                           ],
                                         ))
                                   ]),
@@ -557,7 +581,7 @@ class MergeChildParent extends BaseMergeChildParent {
                                 content: Text(
                                     'Etwas hat nicht funktioniert. Bitte versuche es erneut.'),
                                 actions: <Widget>[
-                                  RaisedButton(
+                                  ElevatedButton(
                                     child: Text('Ok'),
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
@@ -567,20 +591,28 @@ class MergeChildParent extends BaseMergeChildParent {
                           });
                     }),
               },
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              color: Color(0xff7a62ff),
-              textColor: Colors.white,
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30))),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Color(0xff7a62ff)),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
             ),
-            RaisedButton(
+            ElevatedButton(
               child: new Text('Abbrechen', style: new TextStyle(fontSize: 20)),
               onPressed: () async => {
                 upgradeKid(Map<String, dynamic>()),
               },
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              color: Color(0xff7a62ff),
-              textColor: Colors.white,
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30))),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Color(0xff7a62ff)),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
             )
           ],
         ),
@@ -631,12 +663,14 @@ class MergeChildParent extends BaseMergeChildParent {
         } else {
           moreaUser.displayName = moreaUser.pfadiName;
         }
-        moreaUser.groupIDs.forEach((String groupID) async {
-          await MoreaGroup.join(groupID,
-              userID: childUID,
-              displayName: moreaUser.displayName,
-              customInfo: moreaUser.generateAndValitateUserMap());
-        });
+        print(moreaUser.groupIDs);
+        print(childUID);
+        print(moreaUser.displayName);
+        print(moreaUser.generateAndValitateUserMap().toString());
+        for (var groupID in moreaUser.groupIDs) {
+          await moreafire.groupPriviledgeTN(groupID, childUID,
+              moreaUser.displayName, moreaUser.generateAndValitateUserMap());
+        }
 
         return true;
       }

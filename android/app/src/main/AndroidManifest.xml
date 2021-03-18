@@ -32,9 +32,9 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
     <application
-        android:icon="@mipmap/ic_launcher"
-        android:label="Morea"
-        android:roundIcon="@mipmap/ic_morea_launcher_round">
+        android:icon="@mipmap/launcher_icon"
+        android:label="Morea">
+        
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
@@ -51,6 +51,7 @@
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">

@@ -27,7 +27,7 @@ dependencies:
     http: any
     intl: any
     cloud_firestore: ^1.0.1
-    url_launcher: ^5.2.0
+    url_launcher: ^6.0.2
     share: any
     expandable: any
     qr_flutter: any
@@ -49,14 +49,17 @@ dependencies:
 
 
 dev_dependencies:
-    flutter_launcher_icons: "^0.8.0"
+    flutter_launcher_icons: "^0.9.0"
     flutter_test:
         sdk: flutter
 
 flutter_icons:
-    android: true
+    android: "launcher_icon"
     ios: true
-    image_path: "assets/icon/icon.png"
+    image_path: "assets/icon/logo_app_ios.png"
+    #image_path_android: "assets/icon/Logo_morea_productions_icon_dark.png"
+    #adaptive_icon_background: "#323232"
+    #adaptive_icon_foreground: "assets/icon/icon.png"
 
 
 
@@ -95,7 +98,7 @@ flutter:
         - assets/images/logo.jpeg
         - assets/images/background.png
         - assets/icon/logo_loading.png
-        - assets/images/logo_app_ios.png
+        - assets/icon/logo_app_ios.png
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.io/assets-and-images/#resolution-aware.

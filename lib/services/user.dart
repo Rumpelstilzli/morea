@@ -21,7 +21,7 @@ class User {
       plz,
       geschlecht;
   //List<String> subscribedGroups = new List<String>();
-  List<String> groupIDs = new List<String>();
+  List<String> groupIDs = <String>[];
   Map<String, RoleEntry> groupPrivilege = new Map();
   Map<String, Map<String, String>> childMap;
   Map<String, dynamic> _userMap, groupMap, elternMap;

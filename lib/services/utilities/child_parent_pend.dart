@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:morea/morea_strings.dart';
-import 'package:morea/services/Group/group_data.dart';
 import 'package:morea/services/auth.dart';
 import 'package:morea/services/cloud_functions.dart';
 import 'package:morea/services/crud.dart';
@@ -19,8 +18,7 @@ class ChildParendPend extends BaseChildParendPend {
 
   Future<String> childGenerateRequestString(
       Map<String, dynamic> userMap) async {
-    var someData = (await callFunction(
-            getcallable("childPendRequest"),
+    var someData = (await callFunction(getcallable("childPendRequest"),
             param: Map<String, dynamic>.from({
               userMapPos: userMap[userMapPos],
               userMapUID: userMap[userMapUID],
@@ -41,8 +39,7 @@ class ChildParendPend extends BaseChildParendPend {
 
   Future<void> parentSendsRequestString(
       String requestStr, Map<String, dynamic> userMap) async {
-    return (await callFunction(
-        getcallable("parendPendAccept"),
+    return (await callFunction(getcallable("parendPendAccept"),
         param: Map.from({
           userMapPos: userMap[userMapPos],
           userMapUID: userMap[userMapUID],
@@ -52,8 +49,7 @@ class ChildParendPend extends BaseChildParendPend {
   }
 
   Future<String> parentCreatesUser(String _email, String _password) async {
-    return (await callFunction(
-            getcallable("createAccount"),
+    return (await callFunction(getcallable("createAccount"),
             param: Map.from({"email": _email, "password": _password})))
         .data;
   }

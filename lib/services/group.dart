@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:morea/morea_strings.dart';
 import 'package:morea/services/cloud_functions.dart';
 import 'package:morea/services/crud.dart';
