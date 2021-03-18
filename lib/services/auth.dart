@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:morea/morea_strings.dart';
 import 'dart:async';
 import 'package:morea/services/utilities/dwi_core.dart';
@@ -35,7 +34,7 @@ abstract class BaseAuth {
   Future<void> signOut();
 
   AuthProblems checkForAuthErrors(
-      BuildContext context, PlatformException error);
+      BuildContext context, FirebaseAuthException error);
 
   void displayAuthError(AuthProblems errorType, BuildContext context);
 
@@ -139,7 +138,7 @@ class Auth implements BaseAuth {
   }
 
   AuthProblems checkForAuthErrors(
-      BuildContext context, PlatformException error) {
+      BuildContext context, FirebaseAuthException error) {
     PlatformType platform = dwiHardware.getDevicePlatform();
     AuthProblems errorType;
     if (platform == PlatformType.isAndroid) {

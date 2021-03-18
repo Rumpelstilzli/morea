@@ -166,9 +166,7 @@ class HomeFeed {
   }
 
   void readMap(Map<String, dynamic> data) {
-    print("TP1");
     for (String eventID in data.keys) {
-      print("TP2");
       this.homeFeed[eventID] = HomeFeedEntry();
       if (data[eventID].containsKey(groupMapUploadeByUserID))
         this.homeFeed[eventID].uploadedByUserID =

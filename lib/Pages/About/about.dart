@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:morea/Widgets/standart/moreaTextStyle.dart';
 import 'package:morea/morealayout.dart';
 import 'package:morea/services/utilities/url_launcher.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../../Widgets/standart/buttons.dart';
 
 class AboutThisApp extends StatelessWidget {
@@ -49,17 +47,14 @@ class AboutThisApp extends StatelessWidget {
                           style: MoreaTextStyle.normal,
                           children: <TextSpan>[
                         TextSpan(
-                            text: '.\nAzb Jarvis und Roran',
+                            text: '.\nAzb Jarvis, Sunny und Roran',
                             style: MoreaTextStyle.normal)
                       ])),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: moreaRaisedButton('it@morea.ch', () async {
-                    String url = 'mailto:it@morea.ch';
-                    print(url);
-                      await launch(url);
-                  }),
+                  child: moreaRaisedButton('it@morea.ch',
+                      () => Urllauncher().openMail('it@morea.ch')),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 20),

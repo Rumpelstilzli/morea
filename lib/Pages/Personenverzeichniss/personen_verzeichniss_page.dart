@@ -6,6 +6,7 @@ import 'package:morea/Widgets/standart/moreaTextStyle.dart';
 import 'package:morea/morea_strings.dart';
 import 'package:morea/morealayout.dart';
 import 'package:morea/services/crud.dart';
+import 'package:morea/services/group.dart';
 import 'package:morea/services/morea_firestore.dart';
 import 'package:morea/services/utilities/MiData.dart';
 
@@ -61,8 +62,7 @@ class PersonenVerzeichnisStatePage extends State<PersonenVerzeichnisState>
 
   Widget personen(String groupID) {
     return FutureBuilder(
-        future:
-            widget.crud0.getCollection('$pathGroups/$groupID/$pathPriviledge'),
+        future: getMembers(widget.crud0, groupID),
         builder:
             (BuildContext context, AsyncSnapshot<QuerySnapshot> groupSnap) {
           if (!groupSnap.hasData) return moreaLoading.loading();
@@ -76,7 +76,7 @@ class PersonenVerzeichnisStatePage extends State<PersonenVerzeichnisState>
                     Padding(
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        convMiDatatoWebflow(groupID),
+                        widget.moreaFire.getMapGroupData[groupID].groupNickName,
                         style: MoreaTextStyle.title,
                       ),
                     ),
@@ -85,16 +85,16 @@ class PersonenVerzeichnisStatePage extends State<PersonenVerzeichnisState>
                       shrinkWrap: true,
                       itemCount: groupSnap.data.docs.length,
                       itemBuilder: (context, int index) {
-                        String name = groupSnap.data.docs[index]
-                            .data()[groupMapDisplayName];
-
                         return ListTile(
                           title: new Text(
-                            name,
+                            groupSnap.data.docs[index]
+                                .data()[groupMapDisplayName],
                             style: MoreaTextStyle.lable,
                           ),
-                          onTap: () =>
-                              navigatetoprofile(groupSnap.data.docs[index].id),
+                          onTap: () => navigatetoprofile(
+                              groupSnap.data.docs[index].data(),
+                              groupID,
+                              groupSnap.data.docs[index].id),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: Colors.black,
@@ -127,9 +127,10 @@ class PersonenVerzeichnisStatePage extends State<PersonenVerzeichnisState>
         });
   }
 
-  navigatetoprofile(String uID) {
+  navigatetoprofile(
+      Map<String, dynamic> customInfo, String groupID, String userID) {
     Navigator.of(context).push(new MaterialPageRoute(
-        builder: (BuildContext context) =>
-            new ViewUserProfilePage(uID, widget.moreaFire, widget.crud0)));
+        builder: (BuildContext context) => new ViewUserProfilePage(
+            userID, groupID, customInfo, widget.moreaFire, widget.crud0)));
   }
 }

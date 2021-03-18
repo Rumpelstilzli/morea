@@ -76,7 +76,7 @@ class MoreaFirebase extends BaseMoreaFirebase {
   Map<String, dynamic> _userMap;
   Platform platform = Platform();
   FirebaseFirestore firestore;
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   User moreaUser;
 
   StreamController<Map<String, GroupData>> sCGroupMaps = BehaviorSubject();
@@ -136,7 +136,7 @@ class MoreaFirebase extends BaseMoreaFirebase {
     else
       for (String groupID in this.getGroupIDs) {
         var someVar = (await crud0.getDocument(
-                '$pathGroups/$groupID/$pathPriviledge', moreaUser.userID))
+                '$pathGroups/$groupID/$pathPriviledge', User.id))
             .data();
         sCGroupMaps.addStream(crud0
             .streamDocument(pathGroups, groupID)
@@ -270,7 +270,7 @@ class MoreaFirebase extends BaseMoreaFirebase {
           'endTimeStamp': eventEndTimeStamp,
           'startTimeStamp': eventStartTimeStamp,
           'timeStamp': [DateTime.now().toString()],
-          'userID': [this.moreaUser.userID],
+          'userID': [User.id]
         }
       };
       Map<String, dynamic> groupMap = groupDoc.data();
@@ -289,8 +289,8 @@ class MoreaFirebase extends BaseMoreaFirebase {
       Map<String, dynamic> data) {
     for (String groupID in groupIDs)
       //Upload the HomeFeed
-      this.getMapGroupData[groupID].uploadHomeFeedEntry(this.moreaUser.userID,
-          eventID, eventEndTimeStamp, eventStartTimeStamp, data, this.crud0);
+      this.getMapGroupData[groupID].uploadHomeFeedEntry(User.id, eventID,
+          eventEndTimeStamp, eventStartTimeStamp, data, this.crud0);
     return null;
   }
 

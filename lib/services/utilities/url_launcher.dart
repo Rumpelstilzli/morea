@@ -16,13 +16,13 @@ abstract class BaseUrllauncher {
 }
 
 class Urllauncher implements BaseUrllauncher {
-  Urllauncher();
-  //TODO mailto:email?subject=subsect
-  Future<void> openMail(String email) async {
-    String url = 'mailto:$email';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
+  Future<void> openMail(String email, {String subject, String body}) async {
+    String url =
+        'mailto:$email?${subject == null ? '' : ('subject=' + subject)}${body == null ? '' : ('&body=' + body)}';
+
+    if (await canLaunch(url))
+      return await launch(url);
+    else {
       throw 'Could not launch $url';
     }
   }

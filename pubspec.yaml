@@ -47,15 +47,17 @@ dependencies:
 
 
 dev_dependencies:
-    flutter_launcher_icons: "^0.7.0"
+    flutter_launcher_icons: "^0.9.0"
     flutter_test:
         sdk: flutter
 
 flutter_icons:
     android: "launcher_icon"
     ios: true
-    image_path: "assets/icon/Logo_morea_productions_icon_dark.png"
-    adaptive_icon_background: "#fff000"
+    image_path: "assets/icon/logo_app_ios.png"
+    #image_path_android: "assets/icon/Logo_morea_productions_icon_dark.png"
+    #adaptive_icon_background: "#323232"
+    #adaptive_icon_foreground: "assets/icon/icon.png"
 
 
 

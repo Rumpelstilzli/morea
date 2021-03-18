@@ -10,6 +10,7 @@ import 'package:morea/Widgets/standart/moreaTextStyle.dart';
 import 'package:morea/morea_strings.dart';
 import 'package:morea/morealayout.dart';
 import 'package:morea/services/cloud_functions.dart';
+import 'package:morea/services/group.dart';
 import 'package:morea/services/mailchimp_api_manager.dart';
 import 'package:morea/services/morea_firestore.dart';
 import 'package:morea/services/crud.dart';
@@ -17,8 +18,10 @@ import 'package:flutter/material.dart';
 import 'package:morea/services/utilities/MiData.dart';
 
 class EditUserProfilePage extends StatefulWidget {
-  EditUserProfilePage({this.profile, this.moreaFire, this.crud0});
+  EditUserProfilePage(
+      {this.userID, this.groupID, this.profile, this.moreaFire, this.crud0});
 
+  final String groupID, userID;
   final MoreaFirebase moreaFire;
   final CrudMedthods crud0;
   final Map profile;
@@ -46,6 +49,7 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
   List<String> _stufe, oldGroup;
   List<Map> _stufenselect = [];
   List<String> _rollenselect = ['Teilnehmer', 'Leiter'];
+  Map<String, dynamic> customInfo;
   MoreaLoading moreaLoading;
   bool loading = true;
 
@@ -54,8 +58,15 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
       setState(() {
         loading = true;
       });
+
       Map<String, dynamic> userdata = mapUserData();
-      await moreafire.updateUserInformation(userdata['UID'], userdata);
+
+      MoreaGroup.editPriviledgeEntry(widget.groupID,
+          userID: widget.userID,
+          displayName: (userdata[userMapPfadiName] == " ")
+              ? userdata[userMapVorName]
+              : userdata[userMapPfadiName],
+          customInfo: userdata);
       await moreafire
           .goToNewGroup(
               userdata['UID'],
@@ -108,33 +119,58 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
       loading = true;
     });
     Navigator.of(context).pop();
-    if (widget.profile[userMapEltern] != null) {
-      for (var elternUID in widget.profile[userMapEltern].keys.toList()) {
+    if (customInfo[userMapEltern] != null) {
+      for (var elternUID in customInfo[userMapEltern].keys.toList()) {
         var elternMap = (await crud0.getDocument(pathUser, elternUID)).data();
-        elternMap[userMapKinder].remove(widget.profile[userMapUID]);
+        elternMap[userMapKinder].remove(customInfo[userMapUID]);
         await moreafire.updateUserInformation(elternMap[userMapUID], elternMap);
       }
     }
-    if (widget.profile[userMapKinder] != null) {
-      for (var childUID in widget.profile[userMapKinder].keys.toList()) {
+    if (customInfo[userMapKinder] != null) {
+      for (var childUID in customInfo[userMapKinder].keys.toList()) {
         Map childMap = (await crud0.getDocument(pathUser, childUID)).data();
         if (childMap[userMapChildUID] == null) {
-          childMap[userMapEltern].remove(widget.profile[userMapUID]);
+          childMap[userMapEltern].remove(customInfo[userMapUID]);
           await moreafire.updateUserInformation(childMap[userMapUID], childMap);
         } else {
           if (childMap[userMapEltern].length == 1) {
             await callFunction(getcallable('deleteUserMap'),
                 param: {'UID': childUID, 'groupID': childMap[userMapGroupIDs]});
           } else {
-            childMap[userMapEltern].remove(widget.profile[userMapUID]);
+            childMap[userMapEltern].remove(customInfo[userMapUID]);
             await moreafire.updateUserInformation(childUID, childMap);
           }
         }
       }
     }
-    if (widget.profile['UID'] == null) {
-      widget.profile['UID'] = widget.profile['childUID'];
+    if (customInfo['UID'] == null) {
+      customInfo['UID'] = customInfo['childUID'];
     }
+    /*
+    if (customInfo[userMapGroupIDs] != null) {
+      await callFunction(getcallable('deleteUserMap'), param: {
+        'UID': customInfo['UID'],
+        'groupID': customInfo[userMapGroupIDs],
+      });
+    } else if (customInfo[userMapSubscribedGroups] != null) {
+      if (customInfo[userMapSubscribedGroups].length == 1) {
+        await callFunction(getcallable('deleteUserMap'), param: {
+          'UID': customInfo['UID'],
+          'groupID': customInfo[userMapSubscribedGroups][0],
+        });
+      } else {
+        for (int i = customInfo[userMapSubscribedGroups].length - 1;
+            i < 1;
+            i--) {
+          await callFunction(getcallable('desubFromGroup'), param: {
+            'UID': customInfo[userMapUID],
+            'groupID': customInfo[userMapSubscribedGroups][i],
+          });
+        }
+        await callFunction(getcallable('deleteUserMap'), param: {
+          'UID': customInfo['UID'],
+          'groupID': customInfo[userMapSubscribedGroups][0],
+    */
     if (widget.profile[userMapGroupIDs] != null) {
       if (widget.profile[userMapGroupIDs].length == 1) {
         await callFunction(getcallable('deleteUserMap'), param: {
@@ -178,7 +214,7 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
   }
 
   Map mapUserData() {
-    Map<String, dynamic> userInfo = widget.profile;
+    Map<String, dynamic> userInfo = customInfo;
     userInfo[userMapPfadiName] = this._pfadinamen;
     userInfo[userMapVorName] = this._vorname;
     userInfo[userMapNachName] = this._nachname;
@@ -197,9 +233,12 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
   @override
   void initState() {
     moreaLoading = MoreaLoading(this);
-    selectedrolle = widget.profile['Pos'];
+    customInfo = widget.profile[groupMapPriviledgeEntryCustomInfo];
+    selectedrolle = customInfo['Pos'];
     moreafire = widget.moreaFire;
     crud0 = widget.crud0;
+
+    //oldGroup = customInfo[userMapGroupIDs];
     oldGroup = List<String>.from(widget.profile[userMapGroupIDs]);
     initStrings();
     initSubgoup();
@@ -252,7 +291,7 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
     } else {
       return new Scaffold(
         appBar: new AppBar(
-          title: new Text(widget.profile['Vorname']),
+          title: new Text(customInfo['Vorname']),
         ),
         body: MoreaBackgroundContainer(
             child: SingleChildScrollView(

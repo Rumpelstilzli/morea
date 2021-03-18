@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:morea/services/crud.dart';
 import 'package:morea/services/morea_firestore.dart';
-
 import 'Pages/About/about.dart';
-import 'Pages/Group/add_group.dart';
 import 'Pages/Personenverzeichniss/personen_verzeichniss_page.dart';
 import 'Pages/Personenverzeichniss/profile_page.dart';
 import 'Widgets/Action/scan.dart';
