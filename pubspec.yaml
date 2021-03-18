@@ -7,10 +7,10 @@ description: Teleblitz app
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.0.0+3
+version: 1.0.1+4
 
 environment:
-    sdk: ">=2.3.0 <3.0.0"
+    sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
     flutter_localizations:
@@ -39,8 +39,6 @@ dependencies:
     flip_card: ^0.4.4
     showcaseview: ^0.1.5
     device_info: ^0.4.1
-
-
     shared_preferences: any
 
     # The following adds the Cupertino Icons font to your application.
