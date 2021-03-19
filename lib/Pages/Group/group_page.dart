@@ -89,6 +89,23 @@ class GroupPageState extends State<GroupPage> {
     this.userInfo = widget.moreaFire.getUserMap;
   }
 
+  FloatingActionButtonLocation _locationFloatingActionButton() {
+    if (widget.moreaFire.getPos == "Leiter") {
+      return FloatingActionButtonLocation.centerDocked;
+    } else {
+      return FloatingActionButtonLocation.endFloat;
+    }
+  }
+
+  BottomAppBar _bottomAppBarBuilder() {
+    if (widget.moreaFire.getPos == "Leiter") {
+      return moreaLeiterBottomAppBar(
+          widget.navigationMap, 'Ändern', MoreaBottomAppBarActivePage.none);
+    } else {
+      return moreaChildBottomAppBar(widget.navigationMap);
+    }
+  }
+
   void tutorial() {
     ShowCaseWidget.of(context)
         .startShowCase([_floatingActionButtonKey, _floatingActionButtonKey2]);

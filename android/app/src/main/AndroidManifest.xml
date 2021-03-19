@@ -34,7 +34,6 @@
     <application
         android:icon="@mipmap/launcher_icon"
         android:label="Morea">
-        
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

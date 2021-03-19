@@ -49,9 +49,10 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
   List<String> _stufe, oldGroup;
   List<Map> _stufenselect = [];
   List<String> _rollenselect = ['Teilnehmer', 'Leiter'];
-  Map<String, dynamic> customInfo;
+
   MoreaLoading moreaLoading;
   bool loading = true;
+  PriviledgeEntry _priviledgeEntry;
 
   void validateAndSubmit() async {
     try {
@@ -76,8 +77,9 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
               oldGroup,
               _stufe)
           .then((onValue) => setState);
-      //mailchimpApiManager.updateUserInfo(
-      //    _email, _vorname, _nachname, _geschlecht, _stufe, moreafire);
+      callFunction(getcallable("updateUserProfile"), param: userdata);
+      mailchimpApiManager.updateUserInfo(
+          _email, _vorname, _nachname, _geschlecht, _stufe, moreafire);
       setState(() {
         loading = false;
       });
@@ -119,32 +121,47 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
       loading = true;
     });
     Navigator.of(context).pop();
-    if (customInfo[userMapEltern] != null) {
-      for (var elternUID in customInfo[userMapEltern].keys.toList()) {
+    if (_priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+            [userMapEltern] !=
+        null) {
+      for (var elternUID in _priviledgeEntry
+          .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapEltern].keys
+          .toList()) {
         var elternMap = (await crud0.getDocument(pathUser, elternUID)).data();
-        elternMap[userMapKinder].remove(customInfo[userMapUID]);
+        elternMap[userMapKinder].remove(_priviledgeEntry
+            .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapUID]);
         await moreafire.updateUserInformation(elternMap[userMapUID], elternMap);
       }
     }
-    if (customInfo[userMapKinder] != null) {
-      for (var childUID in customInfo[userMapKinder].keys.toList()) {
+    if (_priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+            [userMapKinder] !=
+        null) {
+      for (var childUID in _priviledgeEntry
+          .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapKinder].keys
+          .toList()) {
         Map childMap = (await crud0.getDocument(pathUser, childUID)).data();
         if (childMap[userMapChildUID] == null) {
-          childMap[userMapEltern].remove(customInfo[userMapUID]);
+          childMap[userMapEltern].remove(_priviledgeEntry
+              .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapUID]);
           await moreafire.updateUserInformation(childMap[userMapUID], childMap);
         } else {
           if (childMap[userMapEltern].length == 1) {
             await callFunction(getcallable('deleteUserMap'),
                 param: {'UID': childUID, 'groupID': childMap[userMapGroupIDs]});
           } else {
-            childMap[userMapEltern].remove(customInfo[userMapUID]);
+            childMap[userMapEltern].remove(_priviledgeEntry
+                .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapUID]);
             await moreafire.updateUserInformation(childUID, childMap);
           }
         }
       }
     }
-    if (customInfo['UID'] == null) {
-      customInfo['UID'] = customInfo['childUID'];
+    if (_priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+            ['UID'] ==
+        null) {
+      _priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo]['UID'] =
+          _priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+              ['childUID'];
     }
     /*
     if (customInfo[userMapGroupIDs] != null) {
@@ -171,22 +188,42 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
           'UID': customInfo['UID'],
           'groupID': customInfo[userMapSubscribedGroups][0],
     */
-    if (widget.profile[userMapGroupIDs] != null) {
-      if (widget.profile[userMapGroupIDs].length == 1) {
+    if (_priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+            [userMapGroupIDs] !=
+        null) {
+      if (_priviledgeEntry
+              .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapGroupIDs]
+              .length ==
+          1) {
         await callFunction(getcallable('deleteUserMap'), param: {
-          'UID': widget.profile['UID'],
-          'groupID': widget.profile[userMapGroupIDs][0],
+          'UID': _priviledgeEntry
+              .rawPriviledge[groupMapPriviledgeEntryCustomInfo]['UID'],
+          'groupID':
+              _priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+                  [userMapGroupIDs][0],
         });
       } else {
-        for (int i = widget.profile[userMapGroupIDs].length - 1; i < 1; i--) {
+        for (int i = _priviledgeEntry
+                    .rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+                        [userMapGroupIDs]
+                    .length -
+                1;
+            i < 1;
+            i--) {
           await callFunction(getcallable('leafeGroup'), param: {
-            'UID': widget.profile[userMapUID],
-            'groupID': widget.profile[userMapGroupIDs][i],
+            'UID': _priviledgeEntry
+                .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapUID],
+            'groupID': _priviledgeEntry
+                    .rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+                [userMapGroupIDs][i],
           });
         }
         await callFunction(getcallable('deleteUserMap'), param: {
-          'UID': widget.profile['UID'],
-          'groupID': widget.profile[userMapGroupIDs][0],
+          'UID': _priviledgeEntry
+              .rawPriviledge[groupMapPriviledgeEntryCustomInfo]['UID'],
+          'groupID':
+              _priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo]
+                  [userMapGroupIDs][0],
         });
       }
     } else {
@@ -214,7 +251,8 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
   }
 
   Map mapUserData() {
-    Map<String, dynamic> userInfo = customInfo;
+    Map<String, dynamic> userInfo =
+        _priviledgeEntry.rawPriviledge[groupMapPriviledgeEntryCustomInfo];
     userInfo[userMapPfadiName] = this._pfadinamen;
     userInfo[userMapVorName] = this._vorname;
     userInfo[userMapNachName] = this._nachname;
@@ -233,13 +271,15 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
   @override
   void initState() {
     moreaLoading = MoreaLoading(this);
-    customInfo = widget.profile[groupMapPriviledgeEntryCustomInfo];
-    selectedrolle = customInfo['Pos'];
+    this._priviledgeEntry = new PriviledgeEntry(data: widget.profile);
+    selectedrolle = this._priviledgeEntry.roleType;
     moreafire = widget.moreaFire;
     crud0 = widget.crud0;
 
     //oldGroup = customInfo[userMapGroupIDs];
-    oldGroup = List<String>.from(widget.profile[userMapGroupIDs]);
+    oldGroup = List<String>.from(this
+        ._priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapGroupIDs]);
     initStrings();
     initSubgoup();
     loading = false;
@@ -267,18 +307,30 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
   }
 
   void initStrings() {
-    this._vorname = widget.profile[userMapVorName];
-    this._nachname = widget.profile[userMapNachName];
-    this._pfadinamen = widget.profile[userMapPfadiName];
-    this._adresse = widget.profile[userMapAdresse];
-    this._plz = widget.profile[userMapPLZ];
-    this._ort = widget.profile[userMapOrt];
-    this._email = widget.profile[userMapEmail];
-    this._handynummer = widget.profile[userMapHandynummer];
-    this._geschlecht = widget.profile[userMapGeschlecht];
-    this._geburtstag = widget.profile[userMapGeburtstag];
-    this._stufe = List<String>.from(widget.profile[userMapGroupIDs]);
-    this._pos = widget.profile[userMapPos];
+    this._vorname = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapVorName];
+    this._nachname = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapNachName];
+    this._pfadinamen = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapPfadiName];
+    this._adresse = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapAdresse];
+    this._plz = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapPLZ];
+    this._ort = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapOrt];
+    this._email = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapEmail];
+    this._handynummer = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapHandynummer];
+    this._geschlecht = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapGeschlecht];
+    this._geburtstag = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapGeburtstag];
+    this._stufe = List<String>.from(_priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapGroupIDs]);
+    this._pos = _priviledgeEntry
+        .rawPriviledge[groupMapPriviledgeEntryCustomInfo][userMapPos];
   }
 
   @override
@@ -291,7 +343,8 @@ class EditUserPoriflePageState extends State<EditUserProfilePage>
     } else {
       return new Scaffold(
         appBar: new AppBar(
-          title: new Text(customInfo['Vorname']),
+          title: new Text(_priviledgeEntry
+              .rawPriviledge[groupMapPriviledgeEntryCustomInfo]['Vorname']),
         ),
         body: MoreaBackgroundContainer(
             child: SingleChildScrollView(

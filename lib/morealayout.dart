@@ -14,6 +14,7 @@ class MoreaColors {
   static int orangeInt = 0xffff9262;
   static int appBarInt = 0xffFF9B70;
   static Color bottomAppBar = Color.fromRGBO(43, 16, 42, 1);
+  static Color bottomAppBarHighlight = Color.fromRGBO(78, 17, 75, 1.0);
   static Color greyButton = Color.fromRGBO(230, 230, 230, 1);
 
   //306bac 3626A7
@@ -208,7 +209,10 @@ BottomAppBar moreaChildBottomAppBar(Map navigationMap) {
   );
 }
 
-BottomAppBar moreaLeiterBottomAppBar(Map navigationMap, String centerText) {
+enum MoreaBottomAppBarActivePage { messages, agenda, teleblitz, profile, none }
+
+BottomAppBar moreaLeiterBottomAppBar(
+    Map navigationMap, String centerText, MoreaBottomAppBarActivePage active) {
   return BottomAppBar(
     elevation: 0,
     color: MoreaColors.bottomAppBar,
@@ -218,8 +222,13 @@ BottomAppBar moreaLeiterBottomAppBar(Map navigationMap, String centerText) {
           Expanded(
             child: TextButton(
               style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(vertical: 15))),
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                    EdgeInsets.symmetric(vertical: 15)),
+                backgroundColor: active == MoreaBottomAppBarActivePage.messages
+                    ? MaterialStateProperty.all<Color>(
+                        MoreaColors.bottomAppBarHighlight)
+                    : null,
+              ),
               onPressed: navigationMap[toMessagePage],
               child: Column(
                 children: <Widget>[
@@ -240,8 +249,13 @@ BottomAppBar moreaLeiterBottomAppBar(Map navigationMap, String centerText) {
           Expanded(
             child: TextButton(
               style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(vertical: 15))),
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                    EdgeInsets.symmetric(vertical: 15)),
+                backgroundColor: active == MoreaBottomAppBarActivePage.agenda
+                    ? MaterialStateProperty.all<Color>(
+                        MoreaColors.bottomAppBarHighlight)
+                    : null,
+              ),
               onPressed: navigationMap[toAgendaPage],
               child: Column(
                 children: <Widget>[
@@ -277,7 +291,8 @@ BottomAppBar moreaLeiterBottomAppBar(Map navigationMap, String centerText) {
             child: TextButton(
               style: ButtonStyle(
                   padding: MaterialStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(vertical: 15))),
+                      EdgeInsets.symmetric(vertical: 15)),
+                backgroundColor: active == MoreaBottomAppBarActivePage.teleblitz ? MaterialStateProperty.all<Color>(MoreaColors.bottomAppBarHighlight) : null,),
               onPressed: navigationMap[toHomePage],
               child: Column(
                 children: <Widget>[
@@ -299,7 +314,8 @@ BottomAppBar moreaLeiterBottomAppBar(Map navigationMap, String centerText) {
             child: TextButton(
               style: ButtonStyle(
                   padding: MaterialStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(vertical: 15))),
+                      EdgeInsets.symmetric(vertical: 15)),
+                backgroundColor: active == MoreaBottomAppBarActivePage.profile ? MaterialStateProperty.all<Color>(MoreaColors.bottomAppBarHighlight) : null,),
               onPressed: navigationMap[toProfilePage],
               child: Column(
                 children: <Widget>[
